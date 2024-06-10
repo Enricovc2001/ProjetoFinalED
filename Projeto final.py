@@ -1,68 +1,68 @@
 import os
 
-class TrieNode:
+class NoTrie:
     def __init__(self):
-        self.children = {}
-        self.is_end_of_word = False
+        self.filhos = {}
+        self.eh_fim_de_palavra = False
 
 class Trie:
     def __init__(self):
-        self.root = TrieNode()
+        self.raiz = NoTrie()
 
-    def insert(self, word):
-        node = self.root
-        for char in word:
-            if char not in node.children:
-                node.children[char] = TrieNode()
-            node = node.children[char]
-        node.is_end_of_word = True
+    def inserir(self, palavra):
+        no = self.raiz
+        for char in palavra:
+            if char not in no.filhos:
+                no.filhos[char] = NoTrie()
+            no = no.filhos[char]
+        no.eh_fim_de_palavra = True
 
-    def search(self, word):
-        node = self.root
-        for char in word:
-            if char not in node.children:
+    def buscar(self, palavra):
+        no = self.raiz
+        for char in palavra:
+            if char not in no.filhos:
                 return False
-            node = node.children[char]
-        return node.is_end_of_word
+            no = no.filhos[char]
+        return no.eh_fim_de_palavra
 
-    def starts_with(self, prefix):
-        node = self.root
-        for char in prefix:
-            if char not in node.children:
+    def comeca_com(self, prefixo):
+        no = self.raiz
+        for char in prefixo:
+            if char not in no.filhos:
                 return False
-            node = node.children[char]
+            no = no.filhos[char]
         return True
 
-    def auto_complete(self, prefix):
-        def dfs(current_node, current_prefix):
-            if current_node.is_end_of_word:
-                words.append(current_prefix)
-            for char, next_node in current_node.children.items():
-                dfs(next_node, current_prefix + char)
+    def auto_completar(self, prefixo):
+        def dfs(no_atual, prefixo_atual):
+            if no_atual.eh_fim_de_palavra:
+                palavras.append(prefixo_atual)
+            for char, proximo_no in no_atual.filhos.items():
+                dfs(proximo_no, prefixo_atual + char)
 
-        node = self.root
-        words = []
-        for char in prefix:
-            if char not in node.children:
-                return words
-            node = node.children[char]
-        dfs(node, prefix)
-        return words
+        no = self.raiz
+        palavras = []
+        for char in prefixo:
+            if char not in no.filhos:
+                return palavras
+            no = no.filhos[char]
+        dfs(no, prefixo)
+        return palavras
 
-def load_dictionary(trie, filepath):
-    if not os.path.isfile(filepath):
-        print(f"Arquivo {filepath} não encontrado.")
+def carregar_dicionario(trie, caminho_arquivo):
+    if not os.path.isfile(caminho_arquivo):
+        print(f"Arquivo {caminho_arquivo} não encontrado.")
         return
-    with open(filepath, 'r') as file:
-        for word in file:
-            trie.insert(word.strip().lower())
+    with open(caminho_arquivo, 'r') as arquivo:
+        for palavra in arquivo:
+            trie.inserir(palavra.strip().lower())
 
 # Caminho absoluto para o arquivo dictionary.txt
-filepath = r'C:\Users\enrcosta.CISCO\OneDrive - Cisco\Documents\FACENS\Estrutura de dados\dictionary.txt'
+caminho_arquivo = r'C:\Users\enrcosta.CISCO\OneDrive - Cisco\Documents\FACENS\Estrutura de dados\dictionary.txt'
 
 # Cria uma instância da Trie e carrega um dicionário
 trie = Trie()
-load_dictionary(trie, filepath)
+carregar_dicionario(trie, caminho_arquivo)
 
 def main():
     while True:
@@ -70,19 +70,19 @@ def main():
         print("1. Autocompletar")
         print("2. Verificação Ortográfica")
         print("3. Sair")
-        choice = input("Escolha uma opção: ")
+        escolha = input("Escolha uma opção: ")
 
-        if choice == '1':
-            prefix = input("Digite o prefixo: ").lower()
-            suggestions = trie.auto_complete(prefix)
-            print("Sugestões:", suggestions)
-        elif choice == '2':
-            word = input("Digite a palavra: ").lower()
-            if trie.search(word):
-                print(f"A palavra '{word}' está correta.")
+        if escolha == '1':
+            prefixo = input("Digite o prefixo: ").lower()
+            sugestoes = trie.auto_completar(prefixo)
+            print("Sugestões:", sugestoes)
+        elif escolha == '2':
+            palavra = input("Digite a palavra: ").lower()
+            if trie.buscar(palavra):
+                print(f"A palavra '{palavra}' está correta.")
             else:
-                print(f"A palavra '{word}' está incorreta.")
-        elif choice == '3':
+                print(f"A palavra '{palavra}' está incorreta.")
+        elif escolha == '3':
             break
         else:
             print("Opção inválida. Tente novamente.")
