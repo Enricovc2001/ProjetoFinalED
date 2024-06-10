@@ -56,8 +56,7 @@ def carregar_dicionario(trie, caminho_arquivo):
     with open(caminho_arquivo, 'r') as arquivo:
         for palavra in arquivo:
             trie.inserir(palavra.strip().lower())
-
-# Caminho absoluto para o arquivo dictionary.txt
+# Hard Code do caminho do arquivo
 caminho_arquivo = r'C:\Users\enrcosta.CISCO\OneDrive - Cisco\Documents\FACENS\Estrutura de dados\dictionary.txt'
 
 # Cria uma instância da Trie e carrega um dicionário
